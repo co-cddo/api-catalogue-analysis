@@ -1,0 +1,14 @@
+<h1>Items</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>URL</th>
+  </tr>
+  <% @items.each do |item| %>
+    <tr>
+      <td><%= link_to item.name, item %></td>
+      <td><%= item.url %></td>
+    </tr>
+  <% end %>
+</table>

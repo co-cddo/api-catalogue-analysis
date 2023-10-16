@@ -1,0 +1,25 @@
+<h1><%= @item.name %></h1>
+
+<%= link_to 'Back to list', root_path %>
+
+<p><%= @item.description %></p>
+
+<dl>
+  <%
+    [
+      :date_added,
+      :date_updated,
+      :url,
+      :documentation,
+      :license,
+      :maintainer,
+      :area_served,
+      :start_date,
+      :end_date,
+      :provider
+    ].each do |field|
+  %>
+    <dt><%= field.to_s.humanize %></dt>
+    <dd><%= @item.send(field) %></dd>
+  <% end %>
+</dl>
