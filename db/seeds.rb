@@ -5,6 +5,12 @@ Item.delete_all
 require 'csv'
 header_converter = proc { |header| header.underscore.to_sym }
 data = CSV.read(Rails.root.join('data/catalogue.csv'), headers: true, header_converters: header_converter)
-items = data.collect { |datum| Item.create!(datum) }
+items = data.collect do |datum|
+  item = Item.new(datum)
+  mapper = MetadataMapper.new(item)
+  item.metadata = mapper.metadata
+  item.number_required = mapper.required_fields_present.size
+  item.save!
+end
 
 puts "There are now #{items.size} items in the database"

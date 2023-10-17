@@ -2,24 +2,33 @@
 
 <%= link_to 'Back to list', root_path %>
 
-<p><%= @item.description %></p>
+<%
+  fields = [
+    :date_added,
+    :date_updated,
+    :description,
+    :url,
+    :documentation,
+    :license,
+    :maintainer,
+    :area_served,
+    :start_date,
+    :end_date,
+    :provider
+  ]
+%>
+<h2>Api Catalogue data</h2>
+<pre>
+<%= JSON.pretty_generate(@item.attributes.symbolize_keys.slice(*fields)) %>
+</pre>
 
-<dl>
-  <%
-    [
-      :date_added,
-      :date_updated,
-      :url,
-      :documentation,
-      :license,
-      :maintainer,
-      :area_served,
-      :start_date,
-      :end_date,
-      :provider
-    ].each do |field|
-  %>
-    <dt><%= field.to_s.humanize %></dt>
-    <dd><%= @item.send(field) %></dd>
+<h2>Data Market Place Metadata</h2>
+<pre>
+<%= JSON.pretty_generate(@item.metadata) %>
+</pre>
+<h3>Missing required fields</h3>
+<ul>
+  <% (MetadataMapper.required_fields - @metadata_mapper.required_fields_present).each do |missing_field| %>
+    <li><%= missing_field %></li>
   <% end %>
-</dl>
+</ul>
