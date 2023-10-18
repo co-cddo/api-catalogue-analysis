@@ -4,6 +4,7 @@
 
 <%
   fields = [
+    :name,
     :date_added,
     :date_updated,
     :description,
@@ -32,3 +33,11 @@
     <li><%= missing_field %></li>
   <% end %>
 </ul>
+
+<h2>HTTP endpoint</h2>
+<% if @item.url.present? %>
+  <h3>Status <%= @item.api_response.status %></h3>
+  <%= link_to 'Link to API', @item.url %>
+<% else %>
+  <p>No API URL present</p>
+<% end %>

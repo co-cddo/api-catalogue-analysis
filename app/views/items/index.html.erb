@@ -4,14 +4,19 @@
   <tr>
     <th>Name</th>
     <th>
-      Required fields
+      Required fields<br>
       (of <%= MetadataMapper.required_fields.length %>)
+    </th>
+    <th>
+      HTML Status<br>
+      (link to endpoint)
     </th>
   </tr>
   <% @items.each do |item| %>
     <tr>
       <td><%= link_to item.name, item %></td>
       <td><%= item.number_required %></td>
+      <td><%= link_to(item.api_status, item.url) if item.url.present? %></td>
     </tr>
   <% end %>
 </table>

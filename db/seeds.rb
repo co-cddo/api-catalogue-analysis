@@ -10,6 +10,7 @@ items = data.collect do |datum|
   mapper = MetadataMapper.new(item)
   item.metadata = mapper.metadata
   item.number_required = mapper.required_fields_present.size
+  item.api_status = item.api_response.status if item.url.present?
   item.save!
 end
 
