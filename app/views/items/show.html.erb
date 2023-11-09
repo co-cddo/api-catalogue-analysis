@@ -29,10 +29,15 @@
 </pre>
 <h3>Missing required fields</h3>
 <ul>
-  <% (MetadataMapper.required_fields - @metadata_mapper.required_fields_present).each do |missing_field| %>
+  <% @metadata_mapper.required_fields_missing.each do |missing_field| %>
     <li><%= missing_field %></li>
   <% end %>
 </ul>
+
+<h3>Metadata with missing fields padded with dummy data</h3>
+<pre>
+<%= JSON.pretty_generate(@metadata_mapper.padded_metadata) %>
+</pre>
 
 <h2>HTTP endpoint</h2>
 <% if @item.url.present? %>

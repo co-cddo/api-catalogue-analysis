@@ -99,7 +99,9 @@ class MetadataMapper
       requirement: :required ,
       item_field: nil
     }
-  }
+  }.freeze
+
+  PADDING = 'NON-COMPLIANT'.freeze
 
   class << self
     def required_fields
@@ -127,7 +129,21 @@ class MetadataMapper
   end
 
   def required_fields_present
-    metadata.slice(*self.class.required_fields).compact.keys
+    @required_fields_present ||= metadata.slice(*self.class.required_fields).compact.keys
+  end
+
+  def required_fields_missing
+    self.class.required_fields - required_fields_present
+  end
+
+  def padded_metadata
+    padding.merge(metadata.compact)
+  end
+
+  private
+
+  def padding
+    required_fields_missing.each_with_object({}) { |field, hash| hash[field] = PADDING }
   end
 end
 
