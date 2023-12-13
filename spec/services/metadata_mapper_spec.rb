@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe MetadataMapper, type: :service do
@@ -20,14 +22,14 @@ RSpec.describe MetadataMapper, type: :service do
       }
     end
 
-    it "matches the expected hash" do
+    it 'matches the expected hash' do
       expect(metadata_mapper.metadata).to eq(expected)
     end
 
     context 'with an empty item' do
       let(:item) { Item.new }
 
-      it "returns a hash with no values" do
+      it 'returns a hash with no values' do
         expect(metadata_mapper.metadata).to be_a(Hash)
         expect(metadata_mapper.metadata.compact).to be_blank
       end
@@ -36,25 +38,25 @@ RSpec.describe MetadataMapper, type: :service do
 
   describe 'required_fields_present' do
     let(:expected) do
-      [
-        :contactPoint,
-        :description,
-        :endpointDescription,
-        :licence,
-        :modified,
-        :publisher,
-        :title
+      %i[
+        contactPoint
+        description
+        endpointDescription
+        licence
+        modified
+        publisher
+        title
       ]
     end
 
-    it "matches the number of metadata fields that match required fields" do
+    it 'matches the number of metadata fields that match required fields' do
       expect(metadata_mapper.required_fields_present).to eq(expected)
     end
 
-    context "when required fields are missing" do
+    context 'when required fields are missing' do
       let(:item) { Item.new }
 
-      it "matches the number of metadata fields that match required fields" do
+      it 'matches the number of metadata fields that match required fields' do
         expect(metadata_mapper.required_fields_present).to be_blank
       end
     end
@@ -62,28 +64,27 @@ RSpec.describe MetadataMapper, type: :service do
 
   describe 'required_fields_missing' do
     let(:known_to_be_missing) do
-      [:accessRights, :creator, :identifier, :serviceType, :type, :version]
+      %i[accessRights creator identifier serviceType type version]
     end
-    it "is blank if all required fields are present" do
-      p metadata_mapper.required_fields_missing
+    it 'is blank if all required fields are present' do
       expect(metadata_mapper.required_fields_missing).to eq(known_to_be_missing)
     end
 
-    context "when required fields are missing" do
+    context 'when required fields are missing' do
       let(:item) { Item.new }
 
-      it "matches the number of metadata fields that match required fields" do
+      it 'matches the number of metadata fields that match required fields' do
         expect(metadata_mapper.required_fields_missing).to eq(described_class.required_fields)
       end
     end
   end
 
   describe 'padded_metadata' do
-    it "leaves populated fields" do
+    it 'leaves populated fields' do
       expect(metadata_mapper.padded_metadata[:contactPoint]).to eq(item.maintainer)
     end
 
-    it "pads missing fields" do
+    it 'pads missing fields' do
       expect(metadata_mapper.padded_metadata[:version]).to eq(described_class::PADDING)
     end
   end
