@@ -1,11 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe CsvMapper, type: :service do
-  subject(:csv_mapper) { described_class.new(item) }
+  subject(:row) { described_class.call(item) }
   let(:item) { build :item }
-  let(:row) { csv_mapper.row }
 
-  describe 'row' do
+  describe '.call' do
     let(:empty_columns) do
       [:alternativeTitle, :summary, :keyword, :theme, :relatedResource, :servesData]
     end
@@ -62,6 +61,10 @@ RSpec.describe CsvMapper, type: :service do
 
     it "has endpoint description from item documentation" do
       expect(row[:endpointDescription]).to eq(item.documentation)
+    end
+
+    it "presents the row fields in the same order they are defined in CSV_FIELDS" do
+      expect(row.keys).to eq(described_class::CSV_FIELDS.keys)
     end
   end
 

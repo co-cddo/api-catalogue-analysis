@@ -1,3 +1,4 @@
+# Tool that takes an item and from it creates a hash that matches the data structure of the data-marketplace app input spreadsheet
 class CsvMapper
   # data-marketplace app data structure
   CSV_FIELDS = {
@@ -111,6 +112,10 @@ class CsvMapper
     endpointDescription: 'http://example.com/unknown'
   }
 
+  def self.call(item)
+    new(item).row
+  end
+
   attr_reader :item
   def initialize(item)
     @item = item
@@ -149,8 +154,14 @@ class CsvMapper
   end
 
   def output
-    @output ||= CSV_FIELDS.each_with_object(DEFAULTS.dup) do |(key, details), hash|
+    @output ||= CSV_FIELDS.each_with_object(initial_row) do |(key, details), hash|
       hash[key] = details[:item_field].present? ? (item.send(details[:item_field]).presence || hash[key]) : hash[key]
     end
+  end
+
+  def initial_row
+    # Building from CSV_FIELDS to set key order
+    empty_hash_with_csv_fields_keys = CsvMapper::CSV_FIELDS.keys.index_with { nil }
+    empty_hash_with_csv_fields_keys.merge(DEFAULTS)
   end
 end
