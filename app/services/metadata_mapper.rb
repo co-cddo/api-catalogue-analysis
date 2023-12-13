@@ -1,107 +1,108 @@
+# frozen_string_literal: true
 
 class MetadataMapper
   # UK Cross-Government Metadata Exchange Model - Class: DataService
   # https://co-cddo.github.io/ukgov-metadata-exchange-model/DataService/
   METADATA_FIELDS = {
     accessRights: {
-      requirement: :required ,
+      requirement: :required,
       item_field: nil
     },
     alternativeTitle: {
-      requirement: :recommended ,
+      requirement: :recommended,
       item_field: nil
     },
     contactPoint: {
-      requirement: :required ,
+      requirement: :required,
       item_field: :maintainer
     },
     created: {
-      requirement: nil ,
+      requirement: nil,
       item_field: :start_date
     },
     creator: {
-      requirement: :required ,
+      requirement: :required,
       item_field: nil
     },
     description: {
-      requirement: :required ,
+      requirement: :required,
       item_field: :description
     },
     endpointDescription: {
-      requirement: :required ,
+      requirement: :required,
       item_field: :documentation
     },
     endpointURL: {
-      requirement: nil ,
+      requirement: nil,
       item_field: :url
     },
     identifier: {
-      requirement: :required ,
+      requirement: :required,
       item_field: nil
     },
     issued: {
-      requirement: nil ,
+      requirement: nil,
       item_field: :date_added
     },
     keyword: {
-      requirement: nil ,
+      requirement: nil,
       item_field: nil
     },
     licence: {
-      requirement: :required ,
+      requirement: :required,
       item_field: :license
     },
     modified: {
-      requirement: :required ,
+      requirement: :required,
       item_field: :date_updated
     },
     publisher: {
-      requirement: :required ,
+      requirement: :required,
       item_field: :provider
     },
     relatedResource: {
-      requirement: :recommended ,
+      requirement: :recommended,
       item_field: nil
     },
     securityClassification: {
-      requirement: nil ,
+      requirement: nil,
       item_field: nil
     },
     servesData: {
-      requirement: nil ,
+      requirement: nil,
       item_field: nil
     },
     serviceStatus: {
-      requirement: :recommended ,
+      requirement: :recommended,
       item_field: nil
     },
     serviceType: {
-      requirement: :required ,
+      requirement: :required,
       item_field: nil
     },
     summary: {
-      requirement: :recommended ,
+      requirement: :recommended,
       item_field: nil
     },
     theme: {
-      requirement: :recommended ,
+      requirement: :recommended,
       item_field: nil
     },
     title: {
-      requirement: :required ,
+      requirement: :required,
       item_field: :name
     },
     type: {
-      requirement: :required ,
+      requirement: :required,
       item_field: nil
     },
     version: {
-      requirement: :required ,
+      requirement: :required,
       item_field: nil
     }
   }.freeze
 
-  PADDING = 'NON-COMPLIANT'.freeze
+  PADDING = 'NON-COMPLIANT'
 
   class << self
     def required_fields
@@ -109,15 +110,16 @@ class MetadataMapper
     end
 
     def recommended_fields
-      @recommeneded_fields ||= METADATA_FIELDS.select { |_k, v| v[:requirement] == :recommended }.keys
+      @recommended_fields ||= METADATA_FIELDS.select { |_k, v| v[:requirement] == :recommended }.keys
     end
 
     def item_fields
-      @item_field ||= METADATA_FIELDS.select { |_k, v| v[:item_field].present? }.keys
+      @item_fields ||= METADATA_FIELDS.select { |_k, v| v[:item_field].present? }.keys
     end
   end
 
   attr_reader :item
+
   def initialize(item)
     @item = item
   end
@@ -146,4 +148,3 @@ class MetadataMapper
     required_fields_missing.each_with_object({}) { |field, hash| hash[field] = PADDING }
   end
 end
-

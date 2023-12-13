@@ -97,6 +97,7 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
+    fakefs (2.5.0)
     faker (3.2.1)
       i18n (>= 1.8.11, < 2)
     faraday (2.7.11)
@@ -247,6 +248,7 @@ DEPENDENCIES
   capybara
   debug
   factory_bot_rails
+  fakefs
   faker
   faraday
   pg (~> 1.1)

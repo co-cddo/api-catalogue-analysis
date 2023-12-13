@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Tool that takes an item and from it creates a hash that matches the data structure of the data-marketplace app input spreadsheet
 class CsvMapper
   # data-marketplace app data structure
@@ -98,31 +100,34 @@ class CsvMapper
       requirement: :recommended,
       item_field: nil
     }
-  }
+  }.freeze
 
   DEFAULT_EMAIL = 'unknown@example.com'
   DEFAULT_CONTACT_NAME = 'unknown'
-  EMAIL_PATTERN = /[\w\-\.]+@([\w\-]+\.)+[\w\-]+/
+  EMAIL_PATTERN = /[\w\-.]+@([\w-]+\.)+[\w-]+/
   DEFAULTS = {
-    version: "1",
+    version: '1',
     accessRights: 'INTERNAL',
     securityClassification: 'OFFICIAL',
     serviceType: 'REST',
     serviceStatus: 'LIVE',
-    endpointDescription: 'http://example.com/unknown'
-  }
+    endpointDescription: 'http://example.com/unknown',
+    licence: 'https://creativecommons.org/licenses/by/4.0/'
+  }.freeze
 
   def self.call(item)
     new(item).row
   end
 
   attr_reader :item
+
   def initialize(item)
     @item = item
   end
 
   def row
     process_contact_point
+    add_identifier
     output
   end
 
@@ -132,25 +137,29 @@ class CsvMapper
     maintainer = item.maintainer
 
     name, email = case maintainer
-    when /^#{EMAIL_PATTERN}$/ # only email present
-      [
-        maintainer.split('@').first,
-        maintainer
-      ]
-    when EMAIL_PATTERN # email within other text
-      email = maintainer[EMAIL_PATTERN]
-      [
-        maintainer.sub(email, "").split(/\W+/).join(' '),
-        email
-      ]
-    else
-      [
-        (maintainer.presence || DEFAULT_CONTACT_NAME),
-        DEFAULT_EMAIL
-      ]
-    end
+                  when /^#{EMAIL_PATTERN}$/ # only email present
+                    [
+                      maintainer.split('@').first,
+                      maintainer
+                    ]
+                  when EMAIL_PATTERN # email within other text
+                    email = maintainer[EMAIL_PATTERN]
+                    [
+                      maintainer.sub(email, '').split(/\W+/).join(' '),
+                      email
+                    ]
+                  else
+                    [
+                      (maintainer.presence || DEFAULT_CONTACT_NAME),
+                      DEFAULT_EMAIL
+                    ]
+                  end
     output[:contactPoint_contactName] = name
     output[:contactPoint_email] = email
+  end
+
+  def add_identifier
+    output[:identifier] = SecureRandom.uuid
   end
 
   def output
