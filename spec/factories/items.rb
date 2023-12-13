@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :item do
     date_added { 3.days.ago.to_date.to_formatted_s(:db) }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Item, type: :model do
@@ -5,7 +7,7 @@ RSpec.describe Item, type: :model do
   let(:status) { 200 }
 
   before do
-    stub_request(:get, item.url).to_return(status: status)
+    stub_request(:get, item.url).to_return(status:)
   end
   describe '#api_response' do
     it 'returns a success status' do
