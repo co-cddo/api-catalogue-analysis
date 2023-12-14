@@ -29,6 +29,14 @@ RSpec.describe CsvMapper, type: :service do
       expect(row[:description]).to eq(item.description)
     end
 
+    context 'when description includes line breaks' do
+      let(:item) { build :item, description: "Foo \n Bar\n\n" }
+
+      it 'removed the line breaks' do
+        expect(row[:description]).to eq('Foo Bar ')
+      end
+    end
+
     it 'has a contact point email from the item maintainer' do
       expect(row[:contactPoint_email]).to eq(item.maintainer)
     end
