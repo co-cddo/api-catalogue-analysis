@@ -49,6 +49,18 @@ RSpec.describe CsvMapper, type: :service do
       expect(row[:creator]).to eq(item.provider)
     end
 
+    context "when item provider's name is not a known organisation name" do
+      let(:item) { build :item, provider: 'unknown' }
+
+      it 'has a publisher set as the default organisation' do
+        expect(row[:publisher]).to eq(Organisation::DEFAULT)
+      end
+
+      it 'has a creator set as the default organisation' do
+        expect(row[:creator]).to eq(Organisation::DEFAULT)
+      end
+    end
+
     it 'has issued from the item date added' do
       expect(row[:issued]).to eq(item.date_added)
     end

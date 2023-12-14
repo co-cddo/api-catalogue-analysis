@@ -13,6 +13,6 @@ FactoryBot.define do
     area_served { Faker::Address.state }
     start_date { 1.days.ago.to_date.to_formatted_s(:db) }
     end_date { 2.days.from_now.to_date.to_formatted_s(:db) }
-    provider { Faker::Company.name }
+    provider { Organisation.names.sample }
   end
 end

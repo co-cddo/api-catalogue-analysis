@@ -126,6 +126,7 @@ class CsvMapper
   end
 
   def row
+    ensure_item_provider_is_recognised_organisation
     process_contact_point
     add_identifier
     tidy_up_description
@@ -167,6 +168,12 @@ class CsvMapper
     return if output[:description].blank?
 
     output[:description].gsub!(/(\s*\\n\s*)+/, ' ') # Remove line break \n
+  end
+
+  def ensure_item_provider_is_recognised_organisation
+    return if Organisation.names.include?(item.provider)
+
+    item.provider = Organisation::DEFAULT
   end
 
   def output
