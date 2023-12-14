@@ -30,7 +30,7 @@ RSpec.describe CsvMapper, type: :service do
     end
 
     context 'when description includes line breaks' do
-      let(:item) { build :item, description: "Foo \n Bar\n\n" }
+      let(:item) { build :item, description: 'Foo \n Bar\n\n' }
 
       it 'removed the line breaks' do
         expect(row[:description]).to eq('Foo Bar ')

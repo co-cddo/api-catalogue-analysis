@@ -166,7 +166,7 @@ class CsvMapper
   def tidy_up_description
     return if output[:description].blank?
 
-    output[:description].gsub!(/\s+/, ' ')
+    output[:description].gsub!(/(\s*\\n\s*)+/, ' ') # Remove line break \n
   end
 
   def output
