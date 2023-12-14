@@ -128,6 +128,7 @@ class CsvMapper
   def row
     process_contact_point
     add_identifier
+    tidy_up_description
     output
   end
 
@@ -160,6 +161,12 @@ class CsvMapper
 
   def add_identifier
     output[:identifier] = SecureRandom.uuid
+  end
+
+  def tidy_up_description
+    return if output[:description].blank?
+
+    output[:description].gsub!(/\s+/, ' ')
   end
 
   def output
