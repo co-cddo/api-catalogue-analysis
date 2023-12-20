@@ -111,9 +111,14 @@ class CsvMapper
     securityClassification: 'OFFICIAL',
     serviceType: 'REST',
     serviceStatus: 'LIVE',
-    endpointDescription: 'http://example.com/unknown',
-    licence: 'https://creativecommons.org/licenses/by/4.0/'
+    endpointDescription: 'http://example.com/unknown'
   }.freeze
+  LICENCES = {
+    default: 'https://creativecommons.org/licenses/by/4.0/',
+    isc: 'https://opensource.org/license/isc-license-txt/',
+    ogl: 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
+    lpgl: 'https://opensource.org/license/lgpl-3-0/'
+  }
 
   def self.call(item)
     new(item).row
@@ -128,6 +133,7 @@ class CsvMapper
   def row
     ensure_item_provider_is_recognised_organisation
     process_contact_point
+    process_license
     add_identifier
     tidy_up_description
     output
@@ -158,6 +164,22 @@ class CsvMapper
                   end
     output[:contactPoint_contactName] = name
     output[:contactPoint_email] = email
+  end
+
+  def process_license
+    licence = case item.license
+              when /^https?:\/\//
+                item.license
+              when /ISC/
+                LICENCES[:isc]
+              when /OGL/, /Open Government Licence/
+                LICENCES[:ogl]
+              when /LPGL/
+                LICENCES[:lpgl]
+              else
+                LICENCES[:default]
+              end
+    output[:licence] = licence
   end
 
   def add_identifier
