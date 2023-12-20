@@ -73,10 +73,6 @@ RSpec.describe CsvMapper, type: :service do
       expect(row[:created]).to eq(item.date_added)
     end
 
-    it 'has licence from the item license' do
-      expect(row[:licence]).to eq(item.license)
-    end
-
     it 'has endpoint URL from item url' do
       expect(row[:endpointURL]).to eq(item.url)
     end
@@ -99,8 +95,6 @@ RSpec.describe CsvMapper, type: :service do
       CsvMapper::DEFAULTS.each do |key, value|
         if key == :endpointDescription
           expect(row[key]).to eq(item.documentation)
-        elsif key == :licence
-          expect(row[key]).to eq(item.license)
         else
           expect(row[key]).to eq(value)
         end
@@ -153,6 +147,63 @@ RSpec.describe CsvMapper, type: :service do
       it 'uses default values' do
         expect(email).to eq(described_class::DEFAULT_EMAIL)
         expect(name).to eq(described_class::DEFAULT_CONTACT_NAME)
+      end
+    end
+  end
+
+  describe 'licence' do
+    let(:license) { 'text' }
+    let(:item) { build :item, license: }
+    let(:default) { 'https://creativecommons.org/licenses/by/4.0/' }
+
+    it 'replaces text with default URL' do
+      expect(row[:licence]).to eq(default)
+    end
+
+    context 'when license missing' do
+      let(:license) { nil }
+
+      it 'returns default URL' do
+        expect(row[:licence]).to eq(default)
+      end
+    end
+
+    context 'when license is a url' do
+      let(:license) { Faker::Internet.url }
+
+      it 'returns the url' do
+        expect(row[:licence]).to eq(license)
+      end
+    end
+
+    context 'when license is ISC' do
+      let(:license) { 'ISC' }
+
+      it 'returns ISC url' do
+        expect(row[:licence]).to eq('https://opensource.org/license/isc-license-txt/')
+      end
+    end
+
+    context 'when license includes "Open Government Licence"' do
+      let(:license) { 'foo bar Open Government Licence' }
+
+      it 'returns open gov licence url' do
+        expect(row[:licence]).to eq('https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/')
+      end
+    end
+
+    context 'when license includes "OGL"' do
+      let(:license) { 'foo OGL bar' }
+
+      it 'returns open gov licence url' do
+        expect(row[:licence]).to eq('https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/')
+      end
+    end
+
+    context 'when license text includes LPGL' do
+      let(:license) { 'foo LPGL bar' }
+      it 'returns LPGL license url' do
+        expect(row[:licence]).to eq('https://opensource.org/license/lgpl-3-0/')
       end
     end
   end
