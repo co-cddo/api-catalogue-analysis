@@ -90,24 +90,12 @@ RSpec.describe CsvMapper, type: :service do
     end
   end
 
-  describe 'default values' do
-    it 'populates defaults except endpointDescription and license' do
+  describe 'when required entries are missing' do
+    let(:item) { build :item, documentation: '', license: '', date_updated: nil }
+
+    it 'populates with defaults' do
       CsvMapper::DEFAULTS.each do |key, value|
-        if key == :endpointDescription
-          expect(row[key]).to eq(item.documentation)
-        else
-          expect(row[key]).to eq(value)
-        end
-      end
-    end
-
-    context 'when item documentation blank' do
-      let(:item) { build :item, documentation: '', license: '' }
-
-      it 'populates defaults' do
-        CsvMapper::DEFAULTS.each do |key, value|
-          expect(row[key]).to eq(value)
-        end
+        expect(row[key]).to eq(value)
       end
     end
   end

@@ -111,14 +111,15 @@ class CsvMapper
     securityClassification: 'OFFICIAL',
     serviceType: 'REST',
     serviceStatus: 'LIVE',
-    endpointDescription: 'http://example.com/unknown'
+    endpointDescription: 'http://example.com/unknown',
+    modified: Date.today.as_json
   }.freeze
   LICENCES = {
     default: 'https://creativecommons.org/licenses/by/4.0/',
     isc: 'https://opensource.org/license/isc-license-txt/',
     ogl: 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
     lpgl: 'https://opensource.org/license/lgpl-3-0/'
-  }
+  }.freeze
 
   def self.call(item)
     new(item).row
@@ -168,7 +169,7 @@ class CsvMapper
 
   def process_license
     licence = case item.license
-              when /^https?:\/\//
+              when %r{^https?://}
                 item.license
               when /ISC/
                 LICENCES[:isc]
